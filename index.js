@@ -12,6 +12,35 @@ server.use(helmet());
 
 // endpoints here
 
+server.get('/api/zoos/:id', (req, res) => {
+  db('zoos')
+    .where({ id: req.params.id })
+    .then(zoo => {
+      if (zoo.length > 0) {
+        res.status(200).json(zoo);
+      } else {
+        res.status(404).json({ message: 'No zoo found with that id.' })
+      }
+    })
+    .catch(error => {
+      res.status(500).json({
+        "error": "Could not retrieve any Zoos. Please try again."
+      })
+    });
+})
+
+server.get('/api/zoos/', (req, res) => {
+  db('zoos')
+    .then(zoos => {
+      res.status(200).json(zoos);
+    })
+    .catch(error => {
+      res.status(500).json({
+        "error": "Could not retrieve any Zoos. Please try again."
+      })
+    });
+})
+
 server.post('/api/zoos', (req, res) => {
   db('zoos')
     .insert(req.body)
